@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "394595543287",
+    "project_id": "percasitasikmalaya",
+    "storage_bucket": "percasitasikmalaya.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394595543287:android:1ecac71b6277cbcd42cbf2",
+        "android_client_info": {
+          "package_name": "com.example.percasi_tasikmalaya"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCzgDL48PJdw9F_0joWIT031mI9wyVPrY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
