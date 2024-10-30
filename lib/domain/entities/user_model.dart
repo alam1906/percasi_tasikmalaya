@@ -7,6 +7,7 @@ part 'user_model.g.dart';
 class UserModel with _$UserModel {
   factory UserModel({
     required String uid,
+    required String email,
     required String username,
     required String role,
     required int rating,

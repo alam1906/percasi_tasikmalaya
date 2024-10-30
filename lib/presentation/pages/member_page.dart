@@ -6,6 +6,7 @@ import 'package:percasi_tasikmalaya/presentation/pages/create_leader_page.dart';
 import 'package:percasi_tasikmalaya/presentation/pages/create_member_page.dart';
 
 import 'package:percasi_tasikmalaya/presentation/providers/all_user_data_provider/all_user_data_provider.dart';
+import 'package:percasi_tasikmalaya/presentation/providers/club_data_provider/club_data_provider.dart';
 import 'package:percasi_tasikmalaya/presentation/providers/user_data_provider/user_data_provider.dart';
 import 'package:percasi_tasikmalaya/presentation/widgets/list_member.dart';
 import '../widgets/basic_appbar.dart';
@@ -79,17 +80,15 @@ class _MemberPageState extends ConsumerState<MemberPage> {
                 return ListView.builder(
                   itemCount: result.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () async {
-                        // await ref.read(userDataProvider.notifier).updateUser(
-                        //     user: result[index].copyWith(username: 'alam'));
-                      },
-                      child: ListMember(
-                          title: result[index].username.toString().capitalize(),
-                          subTitle1: result[index].role,
-                          subtTitle2: result[index].rating.toString(),
-                          imageUrl: result[index].imageUrl!),
-                    );
+                    final club = ref
+                        .watch(userDataProvider.notifier)
+                        .getNameClub(id: result[index].clubId);
+                    return ListMember(
+                        hero: result[index].uid,
+                        title: result[index].username.toString().capitalize(),
+                        subTitle1: club.toUpperCase(),
+                        subtTitle2: result[index].rating.toString(),
+                        imageUrl: result[index].imageUrl!);
                   },
                 );
               }

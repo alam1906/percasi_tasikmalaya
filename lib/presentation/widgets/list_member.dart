@@ -8,12 +8,14 @@ class ListMember extends StatelessWidget {
     required this.title,
     required this.subTitle1,
     required this.subtTitle2,
-    required this.imageUrl,
+    this.imageUrl,
+    this.hero,
   });
   final String title;
   final String subTitle1;
   final String subtTitle2;
-  final String imageUrl;
+  final String? imageUrl;
+  final String? hero;
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +31,44 @@ class ListMember extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(imageUrl)),
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(100)),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) {
+                        return Scaffold(
+                          body: Center(
+                            child: Hero(
+                              tag: hero ?? '',
+                              child: Container(
+                                width: 300,
+                                height: 300,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: CachedNetworkImageProvider(
+                                            imageUrl!)),
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(300)),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      transitionDuration: const Duration(milliseconds: 200)));
+                },
+                child: Hero(
+                  tag: hero ?? '',
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: CachedNetworkImageProvider(imageUrl!)),
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(100)),
+                  ),
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(

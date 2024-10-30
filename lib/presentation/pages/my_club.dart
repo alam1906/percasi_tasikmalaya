@@ -1,16 +1,14 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:percasi_tasikmalaya/domain/entities/club_model.dart';
 import 'package:percasi_tasikmalaya/domain/entities/user_model.dart';
-import 'package:percasi_tasikmalaya/domain/usecase/club/update_image_club/update_image_club_params.dart';
+
 import 'package:percasi_tasikmalaya/presentation/providers/all_user_data_provider/all_user_data_provider.dart';
 import 'package:percasi_tasikmalaya/presentation/providers/club_data_provider/club_data_provider.dart';
-import 'package:percasi_tasikmalaya/presentation/providers/usecase_provider/club/update_image_club_provider.dart';
+
 import 'package:percasi_tasikmalaya/presentation/providers/user_data_provider/user_data_provider.dart';
 import 'package:percasi_tasikmalaya/presentation/widgets/basic_appbar.dart';
 import 'package:percasi_tasikmalaya/presentation/widgets/list_member.dart';
@@ -23,7 +21,6 @@ class MyClub extends ConsumerStatefulWidget {
 }
 
 class _MyClubState extends ConsumerState<MyClub> {
-  int bannerIndex = 1;
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userDataProvider).valueOrNull;
@@ -42,11 +39,14 @@ class _MyClubState extends ConsumerState<MyClub> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _header(club),
+                _header(club, user),
                 const SizedBox(height: 30),
                 _description(club, user),
                 const SizedBox(height: 30),
-                _gallery(club),
+                Gallery(
+                  club: club,
+                  user: user,
+                ),
                 const SizedBox(height: 30),
                 _anggota(club, allUser),
               ],
@@ -55,7 +55,7 @@ class _MyClubState extends ConsumerState<MyClub> {
         ));
   }
 
-  _anggota(ClubModel club, List<UserModel> allUser) {
+  _anggota(ClubModel club, List<UserModel?> allUser) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -83,113 +83,17 @@ class _MyClubState extends ConsumerState<MyClub> {
               itemCount: allUser.length,
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
+                if (allUser.isEmpty) {
+                  return const SizedBox();
+                }
                 return ListMember(
-                    title: allUser[index].username,
-                    subTitle1: allUser[index].role,
-                    subtTitle2: allUser[index].rating.toString(),
-                    imageUrl: allUser[index].imageUrl!);
+                  hero: allUser[index]!.uid,
+                  title: allUser[index]!.username,
+                  subTitle1: allUser[index]!.role,
+                  subtTitle2: allUser[index]!.rating.toString(),
+                  imageUrl: allUser[index]!.imageUrl!,
+                );
               }),
-        ),
-      ],
-    );
-  }
-
-  _gallery(ClubModel club) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Text(
-              "Description",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Spacer(),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.edit,
-                  color: Colors.blue,
-                ))
-          ],
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          height: 200,
-          child: StatefulBuilder(builder: (context, setState) {
-            return CarouselView(
-              itemExtent: 300,
-              elevation: 3,
-              onTap: (i) async {
-                Map<String, dynamic> mapImage = club.listImageUrl ?? {};
-                ImagePicker()
-                    .pickImage(source: ImageSource.gallery)
-                    .then((value) async {
-                  if (value != null) {
-                    final data = await ref.read(updateImageClubProvider).call(
-                        UpdateImageClubParams(imageFile: File(value.path)));
-                    if (data.isSuccess) {
-                      await ref.read(clubDataProvider.notifier).updateClub(
-                              club: club.copyWith(listImageUrl: {
-                            ...mapImage,
-                            "$i": data.resultValue
-                          }));
-                    } else {
-                      print("Something wrong");
-                    }
-                  }
-                });
-              },
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.yellow,
-                    image: club.listImageUrl!["0"] == null
-                        ? null
-                        : DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
-                              club.listImageUrl?['0'],
-                            ),
-                          ),
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    image: club.listImageUrl!["1"] == null
-                        ? null
-                        : DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
-                              club.listImageUrl?['1'],
-                            ),
-                          ),
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.yellow,
-                    image: club.listImageUrl!["2"] == null
-                        ? null
-                        : DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
-                              club.listImageUrl?['2'],
-                            ),
-                          ),
-                  ),
-                ),
-              ],
-            );
-          }),
         ),
       ],
     );
@@ -211,80 +115,84 @@ class _MyClubState extends ConsumerState<MyClub> {
               ),
             ),
             const Spacer(),
-            IconButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          backgroundColor: const Color(0xfff6f8fb),
-                          title: const Text(
-                            "Change Description",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          content: SizedBox(
-                            width: 10000,
-                            child: TextField(
-                              controller: descriptionC,
-                              maxLines: 6,
-                              cursorHeight: 20,
-                              decoration: InputDecoration(
-                                hintText: "description",
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                contentPadding:
-                                    const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                filled: true,
-                                fillColor: Colors.white,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      width: 0, color: Colors.white),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      width: 0, color: Colors.white),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      width: 0, color: Colors.white),
-                                  borderRadius: BorderRadius.circular(10),
+            user!.role == 'leader'
+                ? IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: const Color(0xfff6f8fb),
+                              title: const Text(
+                                "Change Description",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              content: SizedBox(
+                                width: 10000,
+                                child: TextField(
+                                  controller: descriptionC,
+                                  maxLines: 6,
+                                  cursorHeight: 20,
+                                  decoration: InputDecoration(
+                                    hintText: "description",
+                                    hintStyle:
+                                        const TextStyle(color: Colors.grey),
+                                    contentPadding:
+                                        const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          width: 0, color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          width: 0, color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    disabledBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          width: 0, color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                await ref
-                                    .read(clubDataProvider.notifier)
-                                    .updateClub(
-                                        club: club.copyWith(
-                                            description: descriptionC.text));
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await ref
+                                        .read(clubDataProvider.notifier)
+                                        .updateClub(
+                                            club: club.copyWith(
+                                                description:
+                                                    descriptionC.text));
 
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            "Berhasil mengubah deskripsi")));
-                              },
-                              child: const Text("Submit"),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text("Cancel"),
-                            ),
-                          ],
-                        );
-                      });
-                },
-                icon: const Icon(
-                  Icons.create,
-                  color: Colors.blue,
-                ))
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Berhasil mengubah deskripsi")));
+                                  },
+                                  child: const Text("Submit"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Cancel"),
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                    icon: const Icon(
+                      Icons.create,
+                      color: Colors.blue,
+                    ))
+                : const SizedBox(),
           ],
         ),
         const SizedBox(height: 5),
@@ -297,51 +205,242 @@ class _MyClubState extends ConsumerState<MyClub> {
     );
   }
 
-  _header(ClubModel club) {
+  _header(ClubModel club, UserModel? user) {
     return Column(
       children: [
         Center(
           child: GestureDetector(
-            onTap: ref.watch(userDataProvider).value?.role != 'leader'
-                ? null
-                : () async {
-                    ImagePicker()
-                        .pickImage(source: ImageSource.gallery)
-                        .then((value) async {
-                      if (value != null) {
-                        final data = await ref
-                            .read(clubDataProvider.notifier)
-                            .updateImage(imageFile: File(value.path));
-                        await ref
-                            .read(clubDataProvider.notifier)
-                            .updateClub(club: club.copyWith(imageUrl: data));
-                      } else {}
-                    });
-                  },
-            child: CircleAvatar(
-              radius: 80,
-              backgroundColor: Colors.white,
-              backgroundImage: club.imageUrl != null
-                  ? CachedNetworkImageProvider(club.imageUrl!)
-                  : null,
-              child: club.imageUrl != null ? null : const Icon(Icons.add),
+            onTap: () => Navigator.of(context).push(PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return Scaffold(
+                    appBar: const BasicAppbar(title: ""),
+                    body: Center(
+                      child: Hero(
+                        tag: 'tes',
+                        child: CircleAvatar(
+                          radius: 150,
+                          backgroundColor: Colors.white,
+                          backgroundImage: club.imageUrl != null
+                              ? CachedNetworkImageProvider(club.imageUrl!)
+                              : null,
+                          child: club.imageUrl != null
+                              ? null
+                              : const Icon(Icons.add),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                transitionDuration: const Duration(milliseconds: 300))),
+            child: Hero(
+              tag: 'tes',
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 80,
+                    backgroundColor: Colors.white,
+                    backgroundImage: club.imageUrl != null
+                        ? CachedNetworkImageProvider(club.imageUrl!)
+                        : null,
+                  ),
+                  user!.role == 'leader'
+                      ? Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: GestureDetector(
+                            onTap: () async {
+                              ImagePicker()
+                                  .pickImage(source: ImageSource.gallery)
+                                  .then((value) async {
+                                if (value != null) {
+                                  final data = await ref
+                                      .read(clubDataProvider.notifier)
+                                      .updateImage(imageFile: File(value.path));
+                                  await ref
+                                      .read(clubDataProvider.notifier)
+                                      .updateClub(
+                                          club: club.copyWith(imageUrl: data));
+                                } else {}
+                              });
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 23,
+                              child: Icon(Icons.add),
+                            ),
+                          ))
+                      : const SizedBox(),
+                ],
+              ),
             ),
           ),
         ),
         const SizedBox(height: 10),
-        const Text(
-          "Manonjaya Chess Club",
-          style: TextStyle(
+        Text(
+          club.fullName.toUpperCase(),
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const Text(
-          "(MCC)",
-          style: TextStyle(
+        Text(
+          "(${club.name})".toUpperCase(),
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class Gallery extends ConsumerStatefulWidget {
+  const Gallery({
+    super.key,
+    required this.club,
+    required this.user,
+  });
+  final ClubModel club;
+  final UserModel? user;
+
+  @override
+  ConsumerState<Gallery> createState() => _GalleryState();
+}
+
+class _GalleryState extends ConsumerState<Gallery> {
+  bool isEdit = false;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text(
+              "Gallery",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Spacer(),
+            widget.user!.role == 'leader'
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isEdit = !isEdit;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.edit,
+                      color: isEdit ? Colors.red : Colors.blue,
+                    ))
+                : const SizedBox(),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          height: 270,
+          child: StatefulBuilder(builder: (context, setState) {
+            return GridView.builder(
+              itemCount: 6,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () async {
+                    isEdit == false
+                        ? Navigator.of(context).push(
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return Scaffold(
+                                  appBar: const BasicAppbar(title: ''),
+                                  body: Center(
+                                    child: Hero(
+                                      tag: index,
+                                      child: Container(
+                                        height: 300,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: widget.club.listImageUrl![
+                                                      '$index'] ==
+                                                  null
+                                              ? null
+                                              : DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image:
+                                                      CachedNetworkImageProvider(
+                                                          widget.club
+                                                                  .listImageUrl![
+                                                              '$index']),
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              transitionDuration:
+                                  const Duration(milliseconds: 200),
+                            ),
+                          )
+                        : ImagePicker()
+                            .pickImage(source: ImageSource.gallery)
+                            .then((value) async {
+                            if (value != null) {
+                              final data = await ref
+                                  .read(clubDataProvider.notifier)
+                                  .updateImage(imageFile: File(value.path));
+                              await ref
+                                  .read(clubDataProvider.notifier)
+                                  .updateClub(
+                                    club: widget.club.copyWith(
+                                      listImageUrl: {
+                                        ...widget.club.listImageUrl!,
+                                        "$index": data
+                                      },
+                                    ),
+                                  );
+                            }
+                          });
+                  },
+                  child: Hero(
+                    tag: index,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        image: widget.club.listImageUrl!['$index'] == null
+                            ? null
+                            : DecorationImage(
+                                opacity: isEdit ? 0.2 : 1.0,
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(
+                                    widget.club.listImageUrl!['$index']),
+                              ),
+                      ),
+                      child: isEdit
+                          ? const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            )
+                          : null,
+                    ),
+                  ),
+                );
+              },
+            );
+          }),
         ),
       ],
     );

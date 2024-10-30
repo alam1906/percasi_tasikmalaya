@@ -8,11 +8,13 @@ class ListNews extends StatelessWidget {
     required this.subTitle,
     required this.imageUrl,
     required this.onTap,
+    this.hero,
   });
   final String title;
   final String subTitle;
   final String? imageUrl;
   final VoidCallback onTap;
+  final String? hero;
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +32,20 @@ class ListNews extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 140,
-                  height: 100,
-                  decoration: BoxDecoration(
-                      image: imageUrl != null
-                          ? DecorationImage(
-                              image: CachedNetworkImageProvider(imageUrl!),
-                              fit: BoxFit.fitWidth)
-                          : null,
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(10)),
+                Hero(
+                  tag: hero ?? '',
+                  child: Container(
+                    width: 140,
+                    height: 100,
+                    decoration: BoxDecoration(
+                        image: imageUrl != null
+                            ? DecorationImage(
+                                image: CachedNetworkImageProvider(imageUrl!),
+                                fit: BoxFit.fitWidth)
+                            : null,
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(

@@ -35,6 +35,12 @@ class UserData extends _$UserData {
     }
   }
 
+  String getNameClub({required String id}) {
+    final data = ref.watch(clubDataProvider).valueOrNull;
+    final result = data!.where((e) => e.id.contains(id)).first.name;
+    return result;
+  }
+
   ClubModel getClub() {
     final data = ref.watch(clubDataProvider).valueOrNull;
     final result =

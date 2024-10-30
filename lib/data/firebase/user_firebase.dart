@@ -10,6 +10,7 @@ class UserFirebase implements UserRepository {
   @override
   Future<Result<UserModel>> createUser(
       {required String uid,
+      required String email,
       required String clubId,
       required String imageUrl,
       required int rating,
@@ -17,6 +18,7 @@ class UserFirebase implements UserRepository {
       required String username}) async {
     await _firestore.collection('users').doc(uid).set({
       'uid': uid,
+      'email': email,
       'clubId': clubId,
       'imageUrl': imageUrl,
       'rating': rating,

@@ -36,12 +36,12 @@ class AuthFirebase implements AuthRepository {
   }
 
   @override
-  Future<Result<String>> register(
+  Future<Result<User?>> register(
       {required String email, required String password}) async {
     try {
       final data = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return Result.success(data.user!.uid);
+      return Result.success(data.user);
     } on FirebaseAuthException catch (e) {
       return Result.failed(e.message!);
     }

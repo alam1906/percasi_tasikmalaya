@@ -7,11 +7,13 @@ class DetailNews extends StatelessWidget {
     required this.date,
     required this.description,
     required this.url,
+    required this.hero,
   });
   final String title;
   final String date;
   final String description;
   final String url;
+  final String hero;
 
   @override
   Widget build(BuildContext context) {
@@ -24,26 +26,29 @@ class DetailNews extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: double.infinity,
-                  height: 250,
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      image: DecorationImage(
-                          fit: BoxFit.cover, image: NetworkImage(url))),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            size: 30,
-                            color: Colors.white,
-                          )),
+                Hero(
+                  tag: hero,
+                  child: Container(
+                    width: double.infinity,
+                    height: 250,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                            fit: BoxFit.cover, image: NetworkImage(url))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              size: 30,
+                              color: Colors.white,
+                            )),
+                      ),
                     ),
                   ),
                 ),

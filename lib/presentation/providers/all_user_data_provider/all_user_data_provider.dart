@@ -21,7 +21,6 @@ class AllUserData extends _$AllUserData {
   List<UserModel> getAllUserByClub({required String id}) {
     final result =
         state.valueOrNull?.where((e) => e.clubId.contains(id)).toList();
-
     if (result != null) {
       return result;
     } else {

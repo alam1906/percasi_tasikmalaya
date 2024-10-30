@@ -8,6 +8,7 @@ abstract interface class UserRepository {
   Future<Result<List<UserModel>>> getAllUser();
   Future<Result<UserModel>> createUser(
       {required String uid,
+      required String email,
       required String clubId,
       required String imageUrl,
       required int rating,

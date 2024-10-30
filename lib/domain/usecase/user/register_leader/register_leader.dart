@@ -17,7 +17,8 @@ class RegisterLeader
         email: params.email, password: params.password);
     if (data.isSuccess) {
       final result = await userRepository.createUser(
-          uid: data.resultValue!,
+          uid: data.resultValue!.uid,
+          email: data.resultValue!.email!,
           clubId: params.clubId,
           imageUrl: params.imageUrl,
           rating: params.rating,

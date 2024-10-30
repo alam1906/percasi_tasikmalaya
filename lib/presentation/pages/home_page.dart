@@ -7,6 +7,7 @@ import 'package:percasi_tasikmalaya/presentation/pages/detail_news.dart';
 import 'package:percasi_tasikmalaya/presentation/pages/member_page.dart';
 import 'package:percasi_tasikmalaya/presentation/pages/my_account.dart';
 import 'package:percasi_tasikmalaya/presentation/pages/my_club.dart';
+import 'package:percasi_tasikmalaya/presentation/pages/turnament_page.dart';
 import 'package:percasi_tasikmalaya/presentation/providers/club_data_provider/club_data_provider.dart';
 import 'package:percasi_tasikmalaya/presentation/providers/news_data_provider/news_data_provider.dart';
 import 'news_page.dart';
@@ -96,11 +97,13 @@ class _HomePageState extends ConsumerState<HomePage> {
               children: data != null
                   ? List.generate(data.length, (index) {
                       return ListNews(
+                          hero: '${data[index].id}$index',
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => DetailNews(
+                                        hero: '${data[index].id}$index',
                                         title: data[index].title,
                                         date: data[index].date,
                                         description: data[index].description,
@@ -163,7 +166,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                         MaterialPageRoute(
                             builder: (context) => const NewsPage())),
                   ),
-                  _itemMenu(title: "Tourney"),
+                  _itemMenu(
+                    title: "Tourney",
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TurnamentPage())),
+                  ),
                 ],
               ),
               const SizedBox(height: 20),

@@ -88,11 +88,13 @@ class _ClubPageState extends ConsumerState<NewsPage> {
                               itemCount: result.length,
                               itemBuilder: (context, index) {
                                 return ListNews(
+                                    hero: result[index].id,
                                     onTap: () {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => DetailNews(
+                                                  hero: data[index].id,
                                                   title: result[index].title,
                                                   date: result[index].date,
                                                   description:
