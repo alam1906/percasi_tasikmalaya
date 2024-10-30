@@ -62,7 +62,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FormTextField(title: "Email", hint: "email", controller: emailC),
