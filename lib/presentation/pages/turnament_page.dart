@@ -27,7 +27,7 @@ class _TurnamentPageState extends ConsumerState<TurnamentPage> {
                 child: const Icon(Icons.add),
               )
             : null,
-        appBar: const BasicAppbar(title: "Turnament Page"),
+        appBar: const BasicAppbar(title: "Info Turnament"),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             child: GridView.count(
