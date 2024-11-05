@@ -161,7 +161,7 @@ class _MyAccountState extends ConsumerState<MyAccount> {
         ),
         const SizedBox(height: 10),
         Text(
-          user?.username.capitalize() ?? '',
+          user.username.capitalize(),
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,

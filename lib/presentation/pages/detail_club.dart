@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:percasi_tasikmalaya/domain/entities/club_model.dart';
 import 'package:percasi_tasikmalaya/domain/entities/user_model.dart';
 
 import 'package:percasi_tasikmalaya/presentation/providers/all_user_data_provider/all_user_data_provider.dart';
-import 'package:percasi_tasikmalaya/presentation/providers/club_data_provider/club_data_provider.dart';
+
 import 'package:percasi_tasikmalaya/presentation/providers/user_data_provider/user_data_provider.dart';
 import 'package:percasi_tasikmalaya/presentation/widgets/basic_appbar.dart';
 import 'package:percasi_tasikmalaya/presentation/widgets/list_member.dart';
@@ -26,7 +23,6 @@ class DetailClub extends ConsumerStatefulWidget {
 }
 
 class _DetailClubState extends ConsumerState<DetailClub> {
-  int bannerIndex = 1;
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userDataProvider).valueOrNull;
@@ -241,14 +237,14 @@ class _GalleryState extends ConsumerState<Gallery> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     image: widget
-                                                .club.listImageUrl!['$index'] ==
+                                                .club.listImageUrl?['$index'] ==
                                             null
                                         ? null
                                         : DecorationImage(
                                             fit: BoxFit.cover,
                                             image: CachedNetworkImageProvider(
                                                 widget.club
-                                                    .listImageUrl!['$index']),
+                                                    .listImageUrl?['$index']),
                                           ),
                                   ),
                                 ),
@@ -266,12 +262,12 @@ class _GalleryState extends ConsumerState<Gallery> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                        image: widget.club.listImageUrl!['$index'] == null
+                        image: widget.club.listImageUrl?['$index'] == null
                             ? null
                             : DecorationImage(
                                 fit: BoxFit.cover,
                                 image: CachedNetworkImageProvider(
-                                    widget.club.listImageUrl!['$index']),
+                                    widget.club.listImageUrl?['$index']),
                               ),
                       ),
                       child: isEdit

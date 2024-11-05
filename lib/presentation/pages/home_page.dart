@@ -146,6 +146,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _itemMenu(
+                    icon: Icons.people,
                     title: "Member",
                     onTap: () => Navigator.push(
                         context,
@@ -153,6 +154,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             builder: (context) => const MemberPage())),
                   ),
                   _itemMenu(
+                    icon: Icons.card_membership,
                     title: "Club",
                     onTap: () => Navigator.push(
                         context,
@@ -160,6 +162,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             builder: (context) => const ClubPage())),
                   ),
                   _itemMenu(
+                    icon: Icons.newspaper,
                     title: "News",
                     onTap: () => Navigator.push(
                         context,
@@ -167,6 +170,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             builder: (context) => const NewsPage())),
                   ),
                   _itemMenu(
+                    icon: Icons.info,
                     title: "Tourney",
                     onTap: () => Navigator.push(
                         context,
@@ -180,6 +184,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _itemMenu(
+                    icon: Icons.my_library_books,
                     title: "MyClub",
                     onTap: () => Navigator.push(
                         context,
@@ -187,15 +192,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                             builder: (context) => const MyClub())),
                   ),
                   _itemMenu(
+                    icon: Icons.manage_history,
                     title: "MyAccount",
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const MyAccount())),
                   ),
-                  _itemMenu(title: "Course"),
+                  _itemMenu(icon: Icons.class_, title: "Course"),
                   _itemMenu(
-                    title: "More",
+                    icon: Icons.logout,
+                    title: "Logout",
                     onTap: () => ref.read(userDataProvider.notifier).logout(),
                   ),
                 ],
@@ -210,6 +217,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   _itemMenu({
     required String title,
     VoidCallback? onTap,
+    required IconData icon,
   }) {
     return Column(
       children: [
@@ -219,7 +227,13 @@ class _HomePageState extends ConsumerState<HomePage> {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-                color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+            ),
           ),
         ),
         const SizedBox(height: 5),

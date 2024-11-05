@@ -18,7 +18,7 @@ class _TurnamentPageState extends ConsumerState<TurnamentPage> {
   Widget build(BuildContext context) {
     final user = ref.watch(userDataProvider).valueOrNull;
     return Scaffold(
-        floatingActionButton: user?.role == 'leader'
+        floatingActionButton: user?.role == 'admin'
             ? FloatingActionButton(
                 onPressed: () => Navigator.push(
                     context,

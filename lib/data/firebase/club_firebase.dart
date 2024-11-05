@@ -37,6 +37,7 @@ class ClubFirebase implements ClubRepository {
       'prestasi': 0,
       'imageUrl': null,
       'description': null,
+      'listImageUrl': null,
     });
     await data.update({'id': data.id});
 

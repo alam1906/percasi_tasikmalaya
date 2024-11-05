@@ -6,7 +6,7 @@ import 'package:percasi_tasikmalaya/presentation/pages/create_leader_page.dart';
 import 'package:percasi_tasikmalaya/presentation/pages/create_member_page.dart';
 
 import 'package:percasi_tasikmalaya/presentation/providers/all_user_data_provider/all_user_data_provider.dart';
-import 'package:percasi_tasikmalaya/presentation/providers/club_data_provider/club_data_provider.dart';
+
 import 'package:percasi_tasikmalaya/presentation/providers/user_data_provider/user_data_provider.dart';
 import 'package:percasi_tasikmalaya/presentation/widgets/list_member.dart';
 import '../widgets/basic_appbar.dart';
@@ -26,14 +26,14 @@ class _MemberPageState extends ConsumerState<MemberPage> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        floatingActionButton: data!.role == 'admin'
+        floatingActionButton: data?.role == 'admin'
             ? FloatingActionButton(
                 child: const Icon(Icons.add),
                 onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const CreateLeaderPage())))
-            : data.role == 'leader'
+            : data?.role == 'leader'
                 ? FloatingActionButton(
                     child: const Icon(Icons.add),
                     onPressed: () => Navigator.push(
@@ -88,7 +88,7 @@ class _MemberPageState extends ConsumerState<MemberPage> {
                         title: result[index].username.toString().capitalize(),
                         subTitle1: club.toUpperCase(),
                         subtTitle2: result[index].rating.toString(),
-                        imageUrl: result[index].imageUrl!);
+                        imageUrl: result[index].imageUrl);
                   },
                 );
               }
